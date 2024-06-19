@@ -1,5 +1,57 @@
 #pragma once
+
+#include<string>
+
 #include "noncopyable.h"
+
+// LOG_INFO("%s %d", arg1, arg2)
+#define LOG_INFO(logmsgFormat, ...) \
+    do \
+    { \
+        Logger &logger = Logger::instance();\
+        logger.setLogLevel(INFO);\
+        char buf[1024] = {0};\
+        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__)\
+        logger.log(buf);\
+    } while (0);\
+
+// LOG_ERROR("%s %d", arg1, arg2)
+#define LOG_ERROR(logmsgFormat, ...) \
+    do \
+    { \
+        Logger &logger = Logger::instance();\
+        logger.setLogLevel(ERROR);\
+        char buf[1024] = {0};\
+        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__)\
+        logger.log(buf);\
+    } while (0);\
+
+// LOG_FATAL("%s %d", arg1, arg2)
+#define LOG_FATAL(logmsgFormat, ...) \
+    do \
+    { \
+        Logger &logger = Logger::instance();\
+        logger.setLogLevel(FATAL);\
+        char buf[1024] = {0};\
+        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__)\
+        logger.log(buf);\
+    } while (0);\
+
+#ifdef MUDEBUG
+// LOG_DEBUG("%s %d", arg1, arg2)
+#define LOG_DEBUG(logmsgFormat, ...) \
+    do \
+    { \
+        Logger &logger = Logger::instance();\
+        logger.setLogLevel(DEBUG);\
+        char buf[1024] = {0};\
+        snprintf(buf, 1024, logmsgFormat, ##__VA_ARGS__)\
+        logger.log(buf);\
+    } while (0);\
+#else
+    #define LOG_DEBUG(logmsgFormat, ...)
+#endif
+    
 
 // 定义日志级别 INFO ERROR FATAL DEBUG
 enum LogLevel
@@ -15,10 +67,13 @@ class Logger : noncopyable
 {
 public:
     // 获取日志唯一的实例对象
-    static Logger* instance();
+    static Logger& instance();
     // 设置日志级别
-
+    void setLogLevel(int level);
+    // 写日志
+    void log(std::string msg);
 private:
-    Logger(){}
+    int LogLevel_;  // 成员变量后加"_" 区别系统级变量前加"_"
+    Logger(){}      // 构造函数私有化
     
 };
