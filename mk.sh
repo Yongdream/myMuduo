@@ -1,6 +1,6 @@
 #!/bin/sh
 
-rm -rf build/*
+rm -rf build/* lib/*
 cd build
 cmake ..
 make
